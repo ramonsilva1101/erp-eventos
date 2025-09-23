@@ -3,8 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
 import SelecaoEquipamentos from '../components/SelecaoEquipamentos/SelecaoEquipamentos';
-
-// Importando componentes MUI
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -98,9 +96,7 @@ function EditarLocacao() {
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: '800px', margin: '40px auto', padding: '32px', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-      <Typography variant="h5" component="h2" sx={{ mb: 4 }}>
-        Editar Locação
-      </Typography>
+      <Typography variant="h5" component="h2" sx={{ mb: 4 }}>Editar Locação</Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={8}>
           <FormControl fullWidth required>
@@ -145,13 +141,10 @@ function EditarLocacao() {
             </Grid>
         </Grid>
         <Grid item xs={12}>
-          <Button type="submit" variant="contained" color="primary" size="large" sx={{ mt: 2 }}>
-            Salvar Alterações
-          </Button>
+          <Button type="submit" variant="contained" color="primary" size="large" sx={{ mt: 2 }}>Salvar Alterações</Button>
         </Grid>
       </Grid>
     </Box>
   );
 }
-
 export default EditarLocacao;
