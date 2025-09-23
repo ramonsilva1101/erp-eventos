@@ -36,7 +36,6 @@ function EditarLocacao() {
       try {
         const [locacaoResponse, clientesResponse] = await Promise.all([
           axios.get(`http://127.0.0.1:8000/api/locacoes/${locacaoId}/`),
-          // A CORREÇÃO ESTÁ AQUI
           axios.get('http://127.0.0.1:8000/api/clientes/'),
         ]);
         
@@ -126,7 +125,7 @@ function EditarLocacao() {
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>
-            <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#555', mb: 1 }}>Equipamentos:</Typography>
+            <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#555', mb: 1}}>Equipamentos:</Typography>
             <SelecaoEquipamentos 
               itensSelecionados={formData.itens} 
               onSelecaoChange={handleItensChange}
@@ -135,15 +134,15 @@ function EditarLocacao() {
           </FormControl>
         </Grid>
         <Grid item xs={12} container spacing={3}>
-          <Grid item xs={12} sm={4}>
-            <TextField name="data_locacao" label="Data da Locação" type="date" value={formData.data_locacao} onChange={handleFormChange} InputLabelProps={{ shrink: true }} required fullWidth />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField name="data_devolucao" label="Data da Devolução" type="date" value={formData.data_devolucao} onChange={handleFormChange} InputLabelProps={{ shrink: true }} required fullWidth />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField name="valor_total" label="Valor Total" type="number" value={formData.valor_total} onChange={handleFormChange} InputProps={{ inputProps: { step: "0.01" } }} required fullWidth/>
-          </Grid>
+            <Grid item xs={12} sm={4}>
+                <TextField name="data_locacao" label="Data da Locação" type="date" value={formData.data_locacao} onChange={handleFormChange} InputLabelProps={{ shrink: true }} required fullWidth />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+                <TextField name="data_devolucao" label="Data da Devolução" type="date" value={formData.data_devolucao} onChange={handleFormChange} InputLabelProps={{ shrink: true }} required fullWidth />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+                <TextField name="valor_total" label="Valor Total" type="number" value={formData.valor_total} onChange={handleFormChange} InputProps={{ inputProps: { step: "0.01" } }} required fullWidth/>
+            </Grid>
         </Grid>
         <Grid item xs={12}>
           <Button type="submit" variant="contained" color="primary" size="large" sx={{ mt: 2 }}>

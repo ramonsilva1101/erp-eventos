@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './SelecaoEquipamentos.css';
 
-// Adicionamos a prop 'isEditMode' para o componente saber se está em modo de edição
-function SelecaoEquipamentos({ itensSelecionados, onSelecaoChange, isEditMode = false }) {
+function SelecaoEquipamentos({ itensSelecionados, onSelecaoChange, locacaoAtualId = null }) {
   const [todosEquipamentos, setTodosEquipamentos] = useState([]);
   const [termoBusca, setTermoBusca] = useState('');
   const [erros, setErros] = useState({});
@@ -29,8 +28,7 @@ function SelecaoEquipamentos({ itensSelecionados, onSelecaoChange, isEditMode = 
     const itemSendoEditado = itensSelecionados.find(item => item.equipamento_id === equipamento.id);
     const qtdJaReservada = itemSendoEditado ? itemSendoEditado.quantidade : 0;
     
-    // --- LÓGICA DE ESTOQUE CORRETA E FINAL ---
-    const estoqueMaximo = isEditMode 
+    const estoqueMaximo = locacaoAtualId 
       ? (equipamento.quantidade_disponivel + qtdJaReservada) 
       : equipamento.quantidade_disponivel;
 
@@ -67,7 +65,7 @@ function SelecaoEquipamentos({ itensSelecionados, onSelecaoChange, isEditMode = 
           const itemAtual = itensSelecionados.find(item => item.equipamento_id === equipamento.id);
           
           const qtdJaReservada = selecionado ? itemAtual.quantidade : 0;
-          const estoqueMaximo = isEditMode ? (equipamento.quantidade_disponivel + qtdJaReservada) : equipamento.quantidade_disponivel;
+          const estoqueMaximo = locacaoAtualId ? (equipamento.quantidade_disponivel + qtdJaReservada) : equipamento.quantidade_disponivel;
           const isDisabled = equipamento.quantidade_disponivel <= 0 && !selecionado;
 
           return (
