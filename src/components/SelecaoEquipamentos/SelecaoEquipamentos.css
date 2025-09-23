@@ -1,0 +1,74 @@
+.selecao-container {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.busca-equipamento {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.lista-selecao {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.item-selecao-wrapper {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+.item-selecao-wrapper:last-child {
+  border-bottom: none;
+}
+
+.item-selecao {
+  display: flex;
+  align-items: center;
+}
+
+.item-selecao input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.item-selecao label {
+  flex-grow: 1;
+}
+
+.item-selecao label small {
+  color: #888;
+}
+
+.input-quantidade {
+  width: 60px;
+  padding: 4px;
+  text-align: center;
+  margin-left: auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.input-erro {
+  border-color: #dc3545;
+  background-color: #f8d7da;
+}
+
+.mensagem-erro {
+  color: #dc3545;
+  font-size: 0.8em;
+  display: block;
+  text-align: right;
+  margin-top: 4px;
+}
+.item-selecao-wrapper.disabled label {
+  color: #aaa;
+  text-decoration: line-through;
+}
+
+.item-selecao-wrapper.disabled small {
+  text-decoration: none;
+}

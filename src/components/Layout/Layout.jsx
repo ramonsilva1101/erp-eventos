@@ -1,4 +1,5 @@
-import Header from '../Header/Header'; // Importa o cabeçalho que acabamos de criar
+
+import Header from '../Header/Header';
 
 function Layout({ children }) {
   return (

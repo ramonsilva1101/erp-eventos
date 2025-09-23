@@ -1,35 +1,50 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import './EquipamentoCard.css';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 
 function EquipamentoCard({ equipamento, onDelete }) {
   const handleDelete = async () => {
     const confirmar = window.confirm(`Tem certeza que deseja apagar o equipamento "${equipamento.nome}"?`);
     if (confirmar) {
       try {
-        // GARANTINDO A BARRA FINAL AQUI
         await axios.delete(`http://127.0.0.1:8000/api/equipamentos/${equipamento.id}/`);
         onDelete(equipamento.id);
       } catch (error) {
-        console.error("Erro ao apagar equipamento:", error);
-        alert("Não foi possível apagar o equipamento.");
+        let mensagemErro = "Não foi possível apagar o equipamento.";
+        if (error.response?.data?.detail) {
+          mensagemErro = error.response.data.detail;
+        }
+        alert(mensagemErro);
       }
     }
   };
 
   return (
-    <div className="card">
-      <h3>{equipamento.nome}</h3>
-      <p><strong>Marca:</strong> {equipamento.marca || 'N/A'}</p>
-      <p><strong>Modelo:</strong> {equipamento.modelo || 'N/A'}</p>
-      <div className="card-footer">
-        <p className="quantidade">Qtd. Total: {equipamento.quantidade_total}</p>
-        <div className="card-actions">
-          <Link to={`/equipamentos/${equipamento.id}/editar`} className="btn-editar">Editar</Link>
-          <button onClick={handleDelete} className="btn-apagar">Apagar</button>
-        </div>
-      </div>
-    </div>
+    <Card sx={{ width: 300, margin: 2, display: 'flex', flexDirection: 'column' }}>
+      <CardContent sx={{ flexGrow: 1 }}>
+        <Typography variant="h5" component="div">
+          {equipamento.nome}
+        </Typography>
+        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+          {equipamento.marca || 'Marca não informada'}
+        </Typography>
+        <Typography variant="body2">
+          Modelo: {equipamento.modelo || 'N/A'}
+        </Typography>
+        <Typography variant="body2" sx={{ fontWeight: 'bold', mt: 1 }}>
+          Disponível: {equipamento.quantidade_disponivel} / {equipamento.quantidade_total}
+        </Typography>
+      </CardContent>
+      <CardActions>
+        <Button component={Link} to={`/equipamentos/${equipamento.id}/editar`} size="small">Editar</Button>
+        <Button onClick={handleDelete} size="small" color="error">Apagar</Button>
+      </CardActions>
+    </Card>
   );
 }
 

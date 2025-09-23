@@ -1,60 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import ClienteCard from '../components/ClienteCard/ClienteCard.jsx';
+import EquipamentoCard from '../components/EquipamentoCard/EquipamentoCard.jsx';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-function ClientesPage() {
-  const [clientes, setClientes] = useState([]);
+function EquipamentosPage() {
+  const [equipamentos, setEquipamentos] = useState([]);
   const [termoBusca, setTermoBusca] = useState("");
 
   useEffect(() => {
-    const fetchClientes = async () => {
+    const fetchEquipamentos = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/clientes/', {
+        const response = await axios.get('http://127.0.0.1:8000/api/equipamentos/', {
           params: { search: termoBusca }
         });
-        setClientes(response.data);
+        setEquipamentos(response.data);
       } catch (error) {
-        console.error("Erro ao buscar clientes:", error);
+        console.error("Erro ao buscar equipamentos:", error);
       }
     };
-    fetchClientes();
+    fetchEquipamentos();
   }, [termoBusca]);
 
-  const handleClienteDelete = (idClienteApagado) => {
-    setClientes(clientes.filter(cliente => cliente.id !== idClienteApagado));
+  const handleEquipamentoDelete = (idDoEquipamentoApagado) => {
+    setEquipamentos(equipamentos.filter(equip => equip.id !== idDoEquipamentoApagado));
   };
 
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4" component="h1">
-          Lista de Clientes
+          Lista de Equipamentos
         </Typography>
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           <TextField
-            label="Buscar por nome ou e-mail"
+            label="Buscar por nome, marca ou modelo"
             variant="outlined"
             size="small"
             value={termoBusca}
             onChange={(e) => setTermoBusca(e.target.value)}
             sx={{ width: 300 }}
           />
-          <Button component={Link} to="/clientes/novo" variant="contained" color="primary">
+          <Button component={Link} to="/equipamentos/novo" variant="contained" color="primary">
             Adicionar Novo
           </Button>
         </Box>
       </Box>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-        {clientes.map(cliente => (
-          <ClienteCard 
-            key={cliente.id} 
-            cliente={cliente}
-            onDelete={handleClienteDelete} 
+        {equipamentos.map(equipamento => (
+          <EquipamentoCard 
+            key={equipamento.id} 
+            equipamento={equipamento}
+            onDelete={handleEquipamentoDelete} 
           />
         ))}
       </Box>
@@ -62,4 +62,4 @@ function ClientesPage() {
   );
 }
 
-export default ClientesPage;
+export default EquipamentosPage;

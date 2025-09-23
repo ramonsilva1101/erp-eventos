@@ -1,6 +1,11 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import './ClienteCard.css'; 
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 
 function ClienteCard({ cliente, onDelete }) {
   const handleDelete = async () => {
@@ -10,26 +15,27 @@ function ClienteCard({ cliente, onDelete }) {
         await axios.delete(`http://127.0.0.1:8000/api/clientes/${cliente.id}/`);
         onDelete(cliente.id);
       } catch (error) {
-        console.error("Erro ao apagar cliente:", error);
-        alert("Não foi possível apagar o cliente.");
+        let msg = "Não foi possível apagar o cliente.";
+        if (error.response?.data?.detail) {
+          msg = error.response.data.detail;
+        }
+        alert(msg);
       }
     }
   };
 
   return (
-    // Adicionamos as classes 'card' e 'cliente-card'
-    <div className="card cliente-card"> 
-      <h3>{cliente.nome}</h3>
-      <p><strong>E-mail:</strong> {cliente.email || 'N/A'}</p>
-      <p><strong>Telefone:</strong> {cliente.telefone || 'N/A'}</p>
-      <div className="card-footer">
-        {/* O rodapé do card está vazio por enquanto, mas os botões ficarão aqui */}
-        <div className="card-actions">
-          <Link to={`/clientes/${cliente.id}/editar`} className="btn-editar">Editar</Link>
-          <button onClick={handleDelete} className="btn-apagar">Apagar</button>
-        </div>
-      </div>
-    </div>
+    <Card sx={{ width: 300, margin: 2, display: 'flex', flexDirection: 'column' }}>
+      <CardContent sx={{ flexGrow: 1 }}>
+        <Typography variant="h5" component="div">{cliente.nome}</Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>E-mail: {cliente.email || 'N/A'}</Typography>
+        <Typography variant="body2" color="text.secondary">Telefone: {cliente.telefone || 'N/A'}</Typography>
+      </CardContent>
+      <CardActions>
+        <Button component={Link} to={`/clientes/${cliente.id}/editar`} size="small">Editar</Button>
+        <Button onClick={handleDelete} size="small" color="error">Apagar</Button>
+      </CardActions>
+    </Card>
   );
 }
 

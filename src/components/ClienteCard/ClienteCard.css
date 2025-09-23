@@ -1,5 +1,0 @@
-/* Adicionamos uma classe extra para o card de cliente para poder customizá-lo */
-/* Ele herda todos os estilos de .card do EquipamentoCard.css, mas podemos adicionar mais */
-.cliente-card {
-  border-left: 5px solid #007bff; /* Uma barra lateral azul para diferenciar */
-}
