@@ -8,7 +8,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress'; // Para o feedback de "carregando"
+import CircularProgress from '@mui/material/CircularProgress';
 import PeopleIcon from '@mui/icons-material/People';
 import SpeakerGroupIcon from '@mui/icons-material/SpeakerGroup';
 import EventNoteIcon from '@mui/icons-material/EventNote';
@@ -49,17 +49,17 @@ function DashboardPage() {
     fetchStats();
   }, []); // O [] vazio garante que isso roda só uma vez
 
-  // Um componente interno para nossos cards de estatística, para evitar repetição
+  // Um componente interno para nossos cards de estatística
   const StatCard = ({ icon, title, value, linkTo, color }) => (
     <Paper sx={{ p: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
       {icon}
       <Typography variant="h3" component="h2" sx={{ my: 2, fontWeight: 'bold' }}>
         {loading ? <CircularProgress size={48} /> : value}
       </Typography>
-      <Typography color="text.secondary" sx={{ flexGrow: 1 }}>
+      <Typography color="text.secondary" sx={{ flexGrow: 1, mb: 2 }}>
         {title}
       </Typography>
-      <Button component={Link} to={linkTo} variant="outlined" color={color} sx={{ mt: 2 }}>
+      <Button component={Link} to={linkTo} variant="outlined" color={color}>
         Gerenciar
       </Button>
     </Paper>
@@ -84,7 +84,6 @@ function DashboardPage() {
             color="primary"
           />
         </Grid>
-
         <Grid item xs={12} md={4}>
           <StatCard 
             icon={<PeopleIcon sx={{ fontSize: 60 }} color="secondary" />}
@@ -94,7 +93,6 @@ function DashboardPage() {
             color="secondary"
           />
         </Grid>
-
         <Grid item xs={12} md={4}>
           <StatCard 
             icon={<EventNoteIcon sx={{ fontSize: 60 }} color="success" />}

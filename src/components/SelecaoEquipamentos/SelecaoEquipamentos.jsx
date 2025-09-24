@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './SelecaoEquipamentos.css';
 
-function SelecaoEquipamentos({ itensSelecionados, onSelecaoChange, locacaoAtualId = null }) {
+function SelecaoEquipamentos({ itensSelecionados, onSelecaoChange, isEditMode = false }) {
   const [todosEquipamentos, setTodosEquipamentos] = useState([]);
   const [termoBusca, setTermoBusca] = useState('');
   const [erros, setErros] = useState({});
@@ -28,7 +28,8 @@ function SelecaoEquipamentos({ itensSelecionados, onSelecaoChange, locacaoAtualI
     const itemSendoEditado = itensSelecionados.find(item => item.equipamento_id === equipamento.id);
     const qtdJaReservada = itemSendoEditado ? itemSendoEditado.quantidade : 0;
     
-    const estoqueMaximo = locacaoAtualId 
+    // LÓGICA DE ESTOQUE CORRETA E FINAL
+    const estoqueMaximo = isEditMode 
       ? (equipamento.quantidade_disponivel + qtdJaReservada) 
       : equipamento.quantidade_disponivel;
 
@@ -65,7 +66,7 @@ function SelecaoEquipamentos({ itensSelecionados, onSelecaoChange, locacaoAtualI
           const itemAtual = itensSelecionados.find(item => item.equipamento_id === equipamento.id);
           
           const qtdJaReservada = selecionado ? itemAtual.quantidade : 0;
-          const estoqueMaximo = locacaoAtualId ? (equipamento.quantidade_disponivel + qtdJaReservada) : equipamento.quantidade_disponivel;
+          const estoqueMaximo = isEditMode ? (equipamento.quantidade_disponivel + qtdJaReservada) : equipamento.quantidade_disponivel;
           const isDisabled = equipamento.quantidade_disponivel <= 0 && !selecionado;
 
           return (

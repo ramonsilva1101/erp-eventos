@@ -27,7 +27,7 @@ function LocacoesPage() {
       try {
         const response = await axios.get('http://127.0.0.1:8000/api/locacoes/', { params: { search: termoBusca } });
         setLocacoes(response.data);
-      } catch (error) { console.error("Erro:", error); }
+      } catch (error) { console.error("Erro ao buscar locações:", error); }
     };
     fetchLocacoes();
   }, [termoBusca]);

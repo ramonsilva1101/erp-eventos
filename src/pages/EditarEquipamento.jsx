@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-// Importando componentes MUI
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import CircularProgress from '@mui/material/CircularProgress'; // Para feedback de carregamento
+import Paper from '@mui/material/Paper';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function EditarEquipamento() {
   const { equipamentoId } = useParams();
@@ -17,11 +16,10 @@ function EditarEquipamento() {
   const [marca, setMarca] = useState('');
   const [modelo, setModelo] = useState('');
   const [quantidade, setQuantidade] = useState(1);
-  const [loading, setLoading] = useState(true); // State para controlar o carregamento
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchEquipamento = async () => {
-      setLoading(true);
       try {
         const response = await axios.get(`http://127.0.0.1:8000/api/equipamentos/${equipamentoId}/`);
         const equipamento = response.data;
@@ -54,25 +52,11 @@ function EditarEquipamento() {
   }
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit}
-      sx={{
-        maxWidth: 600,
-        margin: '40px auto',
-        padding: { xs: '16px', sm: '32px' },
-        backgroundColor: 'white',
-        borderRadius: '16px',
-        boxShadow: '0 6px 24px rgba(0,0,0,0.10)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
-      <Typography variant="h4" component="h2" sx={{ mb: 3, fontWeight: 700, color: '#1a237e', textAlign: 'center' }}>
+    <Paper component="form" onSubmit={handleSubmit} sx={{ maxWidth: '600px', margin: 'auto', padding: 4, mt: 4 }}>
+      <Typography variant="h5" component="h1" sx={{ mb: 3 }}>
         Editar Equipamento
       </Typography>
-      <Box sx={{ width: '100%' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         <TextField
           label="Nome do Equipamento"
           variant="outlined"
@@ -80,7 +64,6 @@ function EditarEquipamento() {
           required
           value={nome}
           onChange={(e) => setNome(e.target.value)}
-          sx={{ mb: 2 }}
         />
         <TextField
           label="Marca"
@@ -88,7 +71,6 @@ function EditarEquipamento() {
           fullWidth
           value={marca}
           onChange={(e) => setMarca(e.target.value)}
-          sx={{ mb: 2 }}
         />
         <TextField
           label="Modelo"
@@ -96,7 +78,6 @@ function EditarEquipamento() {
           fullWidth
           value={modelo}
           onChange={(e) => setModelo(e.target.value)}
-          sx={{ mb: 2 }}
         />
         <TextField
           label="Quantidade Total"
@@ -107,15 +88,12 @@ function EditarEquipamento() {
           value={quantidade}
           onChange={(e) => setQuantidade(e.target.value)}
           InputProps={{ inputProps: { min: 1 } }}
-          sx={{ mb: 2 }}
         />
-        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', mt: 2 }}>
-          <Button type="submit" variant="contained" color="primary" size="large" sx={{ px: 4, py: 1.5, fontWeight: 600, borderRadius: '8px', boxShadow: '0 2px 8px rgba(26,35,126,0.08)' }}>
-            Salvar Alterações
-          </Button>
-        </Box>
+        <Button type="submit" variant="contained" color="primary" size="large" sx={{ mt: 2 }}>
+          Salvar Alterações
+        </Button>
       </Box>
-    </Box>
+    </Paper>
   );
 }
 

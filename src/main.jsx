@@ -5,8 +5,6 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import App from './App.jsx';
 import './index.css';
-
-// Importando todas as páginas
 import DashboardPage from './pages/Dashboard.jsx';
 import EquipamentosPage from './pages/EquipamentosPage.jsx';
 import NovoEquipamento from './pages/NovoEquipamento.jsx';
