@@ -19,7 +19,7 @@ class ItemLocacaoReadSerializer(serializers.ModelSerializer):
 
 class LocacaoReadSerializer(serializers.ModelSerializer):
     cliente = ClienteSerializer(read_only=True)
-    itens = ItemLocacaoReadSerializer(source='itens', many=True, read_only=True)
+    itens = ItemLocacaoReadSerializer(many=True, read_only=True)
     status_display = serializers.CharField(source='get_status_display', read_only=True)
     quantidade_total_itens = serializers.SerializerMethodField()
 

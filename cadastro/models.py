@@ -42,8 +42,8 @@ class Locacao(models.Model):
     data_devolucao = models.DateField()
     valor_total = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=4, choices=STATUS_CHOICES, default='ORC')
-    devolvido = models.BooleanField(default=False)
     entregue = models.BooleanField(default=False)
+    devolvido = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "Locação"
