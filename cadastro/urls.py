@@ -1,9 +1,13 @@
 from rest_framework.routers import DefaultRouter
-from .views import ClienteViewSet, EquipamentoViewSet, LocacaoViewSet
+from django.urls import path, include
+from .views import ClienteViewSet, EquipamentoViewSet, LocacaoViewSet, ItemLocacaoViewSet
 
 router = DefaultRouter()
-router.register(r"clientes", ClienteViewSet)
-router.register(r"equipamentos", EquipamentoViewSet)
-router.register(r"locacoes", LocacaoViewSet)
+router.register(r"clientes", ClienteViewSet, basename="cliente")
+router.register(r"equipamentos", EquipamentoViewSet, basename="equipamento")
+router.register(r"locacoes", LocacaoViewSet, basename="locacao")
+router.register(r"itens-locacao", ItemLocacaoViewSet, basename="itemlocacao")
 
-urlpatterns = router.urls
+urlpatterns = [
+    path("", include(router.urls)),
+]

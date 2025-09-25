@@ -1,48 +1,36 @@
 from django.contrib import admin
-from .models import Cliente, Equipamento, Locacao, ItemLocacao
+from .models import Cliente, Equipamento, Locacao, ItemLocacao, AuditLog
 
 
 @admin.register(Cliente)
 class ClienteAdmin(admin.ModelAdmin):
-    list_display = ("nome", "telefone", "email")
-    search_fields = ("nome", "email")
+    list_display = ("id", "nome", "email", "telefone", "ativo", "created_at")
+    list_filter = ("ativo", "created_at")
+    search_fields = ("nome", "email", "telefone")
 
 
 @admin.register(Equipamento)
 class EquipamentoAdmin(admin.ModelAdmin):
-    list_display = ("nome", "descricao", "valor_diaria", "quantidade")
-    search_fields = ("nome",)
-    list_filter = ("nome",)
-
-
-class ItemLocacaoInline(admin.TabularInline):
-    model = ItemLocacao
-    extra = 1
-    autocomplete_fields = ["equipamento"]
+    list_display = ("id", "nome", "descricao", "quantidade", "ativo", "precisa_manutencao")
+    list_filter = ("ativo", "precisa_manutencao")
+    search_fields = ("nome", "descricao")
 
 
 @admin.register(Locacao)
 class LocacaoAdmin(admin.ModelAdmin):
-    list_display = ("cliente", "data_locacao", "data_devolucao", "status", "valor_total")
+    list_display = ("id", "cliente", "status", "data_locacao", "data_devolucao", "valor_final")
     list_filter = ("status", "data_locacao", "data_devolucao")
     search_fields = ("cliente__nome",)
-    inlines = [ItemLocacaoInline]
-
-    # 🔒 deixa valor_total apenas leitura
-    readonly_fields = ("valor_total",)
-
-    def save_model(self, request, obj, form, change):
-        """
-        Garante que o valor_total seja recalculado
-        quando a locação for salva no admin.
-        """
-        super().save_model(request, obj, form, change)
-        obj.valor_total = obj.calcular_valor_total()
-        obj.save(update_fields=["valor_total"])
 
 
 @admin.register(ItemLocacao)
 class ItemLocacaoAdmin(admin.ModelAdmin):
-    list_display = ("locacao", "equipamento", "quantidade")
-    list_filter = ("equipamento",)
-    search_fields = ("equipamento__nome", "locacao__cliente__nome")
+    list_display = ("id", "locacao", "equipamento", "quantidade")
+    search_fields = ("locacao__id", "equipamento__nome")
+
+
+@admin.register(AuditLog)
+class AuditLogAdmin(admin.ModelAdmin):
+    list_display = ("id", "usuario", "acao", "modelo", "objeto_id", "data")
+    list_filter = ("acao", "modelo", "data")
+    search_fields = ("usuario__username", "modelo", "objeto_id", "alteracoes")

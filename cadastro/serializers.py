@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Cliente, Equipamento, Locacao, ItemLocacao
+from django.db import transaction
+from .models import Cliente, Equipamento, Locacao, ItemLocacao, AuditLog
 
 
 class ClienteSerializer(serializers.ModelSerializer):
@@ -15,56 +16,47 @@ class EquipamentoSerializer(serializers.ModelSerializer):
 
 
 class ItemLocacaoSerializer(serializers.ModelSerializer):
-    equipamento_nome = serializers.CharField(source="equipamento.nome", read_only=True)
-    valor_unitario = serializers.DecimalField(
-        source="equipamento.valor_diaria", max_digits=10, decimal_places=2, read_only=True
-    )
+    equipamento_nome = serializers.ReadOnlyField(source="equipamento.nome")
 
     class Meta:
         model = ItemLocacao
-        fields = ["id", "equipamento", "equipamento_nome", "valor_unitario", "quantidade"]
+        fields = ["id", "equipamento", "equipamento_nome", "quantidade"]
 
 
 class LocacaoSerializer(serializers.ModelSerializer):
-    cliente_nome = serializers.CharField(source="cliente.nome", read_only=True)
+    itens = ItemLocacaoSerializer(many=True, read_only=True)
+    cliente_nome = serializers.ReadOnlyField(source="cliente.nome")
+
+    class Meta:
+        model = Locacao
+        fields = ["id", "cliente", "cliente_nome", "data_inicio", "data_fim", "status", "itens"]
+
+
+class LocacaoCreateSerializer(serializers.ModelSerializer):
     itens = ItemLocacaoSerializer(many=True)
 
     class Meta:
         model = Locacao
-        fields = [
-            "id",
-            "cliente",
-            "cliente_nome",
-            "data_locacao",
-            "data_devolucao",
-            "status",
-            "valor_total",
-            "itens",
-        ]
-        read_only_fields = ["valor_total"]
+        fields = ["id", "cliente", "data_inicio", "data_fim", "status", "itens"]
 
+    @transaction.atomic
     def create(self, validated_data):
-        itens_data = validated_data.pop("itens", [])
+        itens_data = validated_data.pop("itens")
         locacao = Locacao.objects.create(**validated_data)
-        for item_data in itens_data:
-            ItemLocacao.objects.create(locacao=locacao, **item_data)
-        locacao.valor_total = locacao.calcular_valor_total()
-        locacao.save()
+
+        for item in itens_data:
+            equipamento = item["equipamento"]
+            quantidade = item["quantidade"]
+
+            # baixa no estoque
+            equipamento.quantidade_estoque -= quantidade
+            equipamento.save()
+
+            ItemLocacao.objects.create(locacao=locacao, equipamento=equipamento, quantidade=quantidade)
+
+        AuditLog.objects.create(
+            acao="criado",
+            modelo="Locacao",
+            objeto_id=locacao.id,
+        )
         return locacao
-
-    def update(self, instance, validated_data):
-        itens_data = validated_data.pop("itens", [])
-        instance.cliente = validated_data.get("cliente", instance.cliente)
-        instance.data_locacao = validated_data.get("data_locacao", instance.data_locacao)
-        instance.data_devolucao = validated_data.get("data_devolucao", instance.data_devolucao)
-        instance.status = validated_data.get("status", instance.status)
-        instance.save()
-
-        # Atualiza itens
-        instance.itens.all().delete()
-        for item_data in itens_data:
-            ItemLocacao.objects.create(locacao=instance, **item_data)
-
-        instance.valor_total = instance.calcular_valor_total()
-        instance.save()
-        return instance
