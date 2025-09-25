@@ -1,46 +1,70 @@
 from rest_framework import serializers
-from .models import Equipamento, Cliente, Locacao, ItemLocacao, Pagamento
+from .models import Cliente, Equipamento, Locacao, ItemLocacao
 
-class EquipamentoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Equipamento
-        fields = '__all__'
 
 class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
-        fields = '__all__'
+        fields = "__all__"
 
-class ItemLocacaoReadSerializer(serializers.ModelSerializer):
-    equipamento = EquipamentoSerializer(read_only=True)
+
+class EquipamentoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Equipamento
+        fields = "__all__"
+
+
+class ItemLocacaoSerializer(serializers.ModelSerializer):
+    equipamento_nome = serializers.CharField(source="equipamento.nome", read_only=True)
+    valor_unitario = serializers.DecimalField(
+        source="equipamento.valor_diaria", max_digits=10, decimal_places=2, read_only=True
+    )
+
     class Meta:
         model = ItemLocacao
-        fields = ['equipamento', 'quantidade']
+        fields = ["id", "equipamento", "equipamento_nome", "valor_unitario", "quantidade"]
 
-class LocacaoReadSerializer(serializers.ModelSerializer):
-    cliente = ClienteSerializer(read_only=True)
-    itens = ItemLocacaoReadSerializer(many=True, read_only=True)
-    status_display = serializers.CharField(source='get_status_display', read_only=True)
-    quantidade_total_itens = serializers.SerializerMethodField()
+
+class LocacaoSerializer(serializers.ModelSerializer):
+    cliente_nome = serializers.CharField(source="cliente.nome", read_only=True)
+    itens = ItemLocacaoSerializer(many=True)
 
     class Meta:
         model = Locacao
-        fields = ['id', 'cliente', 'data_locacao', 'data_devolucao', 'valor_total', 'quantidade_total_itens', 'entregue', 'devolvido', 'status', 'status_display', 'itens']
+        fields = [
+            "id",
+            "cliente",
+            "cliente_nome",
+            "data_locacao",
+            "data_devolucao",
+            "status",
+            "valor_total",
+            "itens",
+        ]
+        read_only_fields = ["valor_total"]
 
-    def get_quantidade_total_itens(self, obj):
-        return sum(item.quantidade for item in obj.itens.all())
+    def create(self, validated_data):
+        itens_data = validated_data.pop("itens", [])
+        locacao = Locacao.objects.create(**validated_data)
+        for item_data in itens_data:
+            ItemLocacao.objects.create(locacao=locacao, **item_data)
+        locacao.valor_total = locacao.calcular_valor_total()
+        locacao.save()
+        return locacao
 
-class ItemLocacaoWriteSerializer(serializers.Serializer):
-    equipamento_id = serializers.IntegerField()
-    quantidade = serializers.IntegerField(min_value=1)
+    def update(self, instance, validated_data):
+        itens_data = validated_data.pop("itens", [])
+        instance.cliente = validated_data.get("cliente", instance.cliente)
+        instance.data_locacao = validated_data.get("data_locacao", instance.data_locacao)
+        instance.data_devolucao = validated_data.get("data_devolucao", instance.data_devolucao)
+        instance.status = validated_data.get("status", instance.status)
+        instance.save()
 
-class LocacaoWriteSerializer(serializers.ModelSerializer):
-    itens = ItemLocacaoWriteSerializer(many=True, write_only=True)
-    class Meta:
-        model = Locacao
-        fields = ['cliente', 'data_locacao', 'data_devolucao', 'valor_total', 'status', 'itens']
+        # Atualiza itens
+        instance.itens.all().delete()
+        for item_data in itens_data:
+            ItemLocacao.objects.create(locacao=instance, **item_data)
 
-class PagamentoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Pagamento
-        fields = '__all__'
+        instance.valor_total = instance.calcular_valor_total()
+        instance.save()
+        return instance

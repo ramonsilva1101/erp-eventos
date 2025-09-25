@@ -1,10 +1,9 @@
-from rest_framework import routers
-from .views import EquipamentoViewSet, ClienteViewSet, LocacaoViewSet, PagamentoViewSet
+from rest_framework.routers import DefaultRouter
+from .views import ClienteViewSet, EquipamentoViewSet, LocacaoViewSet
 
-router = routers.DefaultRouter()
-router.register(r'equipamentos', EquipamentoViewSet)
-router.register(r'clientes', ClienteViewSet)
-router.register(r'locacoes', LocacaoViewSet)
-router.register(r'pagamentos', PagamentoViewSet)
+router = DefaultRouter()
+router.register(r"clientes", ClienteViewSet)
+router.register(r"equipamentos", EquipamentoViewSet)
+router.register(r"locacoes", LocacaoViewSet)
 
 urlpatterns = router.urls
