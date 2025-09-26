@@ -5,4 +5,4 @@ class CadastroConfig(AppConfig):
     name = 'cadastro'
 
     def ready(self):
-        import cadastro.signals  # 👈 garante que os signals sejam carregados
+        import cadastro.signals

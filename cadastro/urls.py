@@ -1,13 +1,17 @@
-from rest_framework.routers import DefaultRouter
+"""
+Rotas do app cadastro
+"""
+
 from django.urls import path, include
+from rest_framework import routers
 from .views import ClienteViewSet, EquipamentoViewSet, LocacaoViewSet, ItemLocacaoViewSet
 
-router = DefaultRouter()
-router.register(r"clientes", ClienteViewSet, basename="cliente")
-router.register(r"equipamentos", EquipamentoViewSet, basename="equipamento")
-router.register(r"locacoes", LocacaoViewSet, basename="locacao")
-router.register(r"itens-locacao", ItemLocacaoViewSet, basename="itemlocacao")
+router = routers.DefaultRouter()
+router.register(r"clientes", ClienteViewSet)
+router.register(r"equipamentos", EquipamentoViewSet)
+router.register(r"locacoes", LocacaoViewSet)
+router.register(r"itens", ItemLocacaoViewSet)
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path("", include(router.urls)),  # Apenas as rotas da API do DRF
 ]
